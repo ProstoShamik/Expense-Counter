@@ -1,17 +1,20 @@
-#include "sqlite3.h"
-#include "storage.h"
 #include "core.h"
+#include "storage.h"
 #include "ui.h"
 
+#include <exception>
+#include <iostream>
+
 int main() {
-    sqlite3* db;
-    if (sqlite3_open("test.db", &db) == SQLITE_OK) {
-        sqlite3_close(db);
+    try {
+        Storage storage("expenses.db");
+        Core core(storage);
+        UI ui(core);
+        ui.run();
+    } catch (const std::exception& error) {
+        std::cerr << "Fatal error: " << error.what() << "\n";
+        return 1;
     }
-    
-    Storage storage;
-    Core core(storage);
-    UI ui;
 
     return 0;
 }
